@@ -10,8 +10,8 @@ alfabéticamente.
  */
 Bodegas.get("/:id?",(req,res)=>{
    let sql = (req.params.id)
-   ?[`SELECT *FROM bodegas WHERE id=${req.params.id}`]
-   :[`SELECT *FROM bodegas ORDER BY nombre`]
+   ?[`SELECT * FROM bodegas WHERE id=${req.params.id}`]
+   :[`SELECT * FROM bodegas ORDER BY nombre`]
    con.query(...sql,
     (err,data,fils)=>{
         console.log(err);
@@ -45,7 +45,6 @@ Bodegas.post('/', (req, res)=>{
         }
     )
 })
-
-
+       
 
 export default Bodegas;
