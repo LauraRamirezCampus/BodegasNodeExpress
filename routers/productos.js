@@ -1,6 +1,7 @@
 import { Router } from "express";
 import dotenv from "dotenv";
 import con from "../config/data.js"
+import proxyProductos from "../middleware/proxyProductos.js";
 /**
  * 6. 
  *      
@@ -42,36 +43,77 @@ dotenv.config();
       )
  
   })
-
-Productos.post('/',(req,res)=>{
-    con.query(
-        `INSERT INTO productos SET ?`,
-        req.body,
-        (err, data, fils)=>{
-            console.log(err);
-            insertId=data.insertId;
-            console.table(data);
-            con.query(
-                `INSERT INTO inventarios SET ?`,
-                {
-                    id_bodega:11,
-                    id_producto:insertId,
-                    cantidad:14,
-                    created_by:req.body.created_by,
-                    update_by:req.body.created_by,
-                },
-                (err, data, fils)=>{
-                    console.log(err);
-                    console.table(data);
-                    res.status(200).send(data)
-                }
-        
-            )
+  Productos.post('/',proxyProductos,(req,res)=>{
+    let databody = req.body;
+    //console.log(databody);
+    let queryProductos= `INSERT INTO productos(nombre,descripcion,estado) VALUES ("${databody.nombre}","${databody.descripcion}",${databody.estado})`;
+    con.query(queryProductos,(err, data1 , fil)=>{
+            if(err){
+                console.log("ha ocurrido un error al insertar la data", err);
+                res.send(err)
+            }else{
+                let id = Math.floor(Math.random() * (50 - 1 +1 )) +1;
+                con.query(/* sql */`SELECT * FROM inventarios`, (err,data2,fil)=>{
+                    let ids = data2.map(obj => obj.id_bodega)
+                    let dentra = true;
+                    console.log(ids);
+                    console.log(id);
+                    while(dentra){
+                        if (ids.includes(id)) {
+                            con.query(`INSERT INTO inventarios(id_bodega,id_producto,cantidad) VALUES (${id},${data1.insertId},${id})`,
+                            (err, data, fil)=>{
+                                if(err){
+                                    console.log("error el insertar la data");
+                                    res.send(err);
+                                }else{
+                                    res.send({
+                                        "Status":200,
+                                        "Message": "La data se ha insertado correctamente"
+                                    });
+                                    console.log(data);
+                                }
+                            });
+                            dentra = false;
+                        }else{
+                            id = Math.floor(Math.random() * (50 - 1 +1 )) +1;
+                            console.log(id);
+                        }
+                    }    
+                });
+            }
         }
+    );
+});
 
-    )
+// Productos.post('/',proxyProductos,(req,res)=>{
+//     con.query(
+//         `INSERT INTO productos SET ?`,
+//         req.body,
+//         (err, data, fils)=>{
+//             console.log(err);
+//             insertId=data.insertId;
+//             console.table(data);
+//             con.query(
+//                 `INSERT INTO inventarios SET ?`,
+//                 {
+//                     id_bodega:11,
+//                     id_producto:insertId,
+//                     cantidad:14,
+//                     created_by:req.body.created_by,
+//                     update_by:req.body.created_by,
+//                 },
+//                 (err, data, fils)=>{
+//                     console.log(err);
+//                     console.table(data);
+//                     res.status(200).send(data)
+//                 }
+        
+//             )
+//         }
+
+//     )
 
     
-})
+// })
 
 export default Productos;
