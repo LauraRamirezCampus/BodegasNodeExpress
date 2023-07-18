@@ -1,6 +1,7 @@
 import {Router} from "express";
 import dotenv from "dotenv";
 import con from "../config/data.js";
+import proxyBodegas from "./../middleware/proxyBodegas.js";
 
 const Bodegas =Router();
 dotenv.config();
@@ -34,7 +35,7 @@ Bodegas.get("/:id?",(req,res)=>{
     "deleted_at": "2023-07-11T22:19:27.000"
   }).
  */
-Bodegas.post('/', (req, res)=>{
+Bodegas.post('/',proxyBodegas,(req, res)=>{
     con.query(
         `INSERT INTO bodegas SET ?`,
         req.body,
