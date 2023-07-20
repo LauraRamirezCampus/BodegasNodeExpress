@@ -85,35 +85,6 @@ dotenv.config();
     );
 });
 
-// Productos.post('/',proxyProductos,(req,res)=>{
-//     con.query(
-//         `INSERT INTO productos SET ?`,
-//         req.body,
-//         (err, data, fils)=>{
-//             console.log(err);
-//             insertId=data.insertId;
-//             console.table(data);
-//             con.query(
-//                 `INSERT INTO inventarios SET ?`,
-//                 {
-//                     id_bodega:11,
-//                     id_producto:insertId,
-//                     cantidad:14,
-//                     created_by:req.body.created_by,
-//                     update_by:req.body.created_by,
-//                 },
-//                 (err, data, fils)=>{
-//                     console.log(err);
-//                     console.table(data);
-//                     res.status(200).send(data)
-//                 }
-        
-//             )
-//         }
 
-//     )
-
-    
-// })
 
 export default Productos;
